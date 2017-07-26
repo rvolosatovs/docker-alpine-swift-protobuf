@@ -1,0 +1,21 @@
+#!/bin/bash
+set -xe
+
+VERSION=${VERSION:-"0.1.13"}
+curl -Ls https://github.com/grpc/grpc-swift/archive/${VERSION}.tar.gz | tar xvz -C /
+cd /grpc-swift-${VERSION}/Plugin 
+make 
+
+mkdir -p /export-lib/usr/bin 
+mkdir -p /export-lib/lib64
+mkdir -p /export-lib/usr/lib/protoc-gen-swift-lib
+
+for lib in `ldd protoc-gen-swift | cut -d'>' -f2 | awk '{print $1}'`; do [ -f ${lib} ] && cp -fLv ${lib} /export-lib/usr/lib/protoc-gen-swift-lib; done 
+for lib in `ldd protoc-gen-swiftgrpc | cut -d'>' -f2 | awk '{print $1}'`; do [ -f ${lib} ] && cp -fLv ${lib} /export-lib/usr/lib/protoc-gen-swift-lib; done
+mv /export-lib/usr/lib/protoc-gen-swift-lib/ld-linux-x86-64.so.2 /export-lib/lib64
+mv protoc-gen-swift /export-lib/usr/bin
+mv protoc-gen-swiftgrpc /export-lib/usr/bin
+cd /export-lib && tar cvf export-lib-$VERSION.tar *
+mv export-lib-$VERSION.tar /export
+
+echo $VERSION
