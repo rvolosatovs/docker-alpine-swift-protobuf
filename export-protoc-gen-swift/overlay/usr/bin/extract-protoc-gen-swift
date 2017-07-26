@@ -1,11 +1,4 @@
 #!/bin/bash
-
-
-if [ "$#" -ne 1 ]; then
-    echo 'usage: docker run ... PROTOC-GEN-SWIFT-VERSION'
-    exit 1
-fi
-
 set -xe
 
 VERSION=${1:-upstream}
