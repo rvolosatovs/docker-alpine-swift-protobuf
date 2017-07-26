@@ -8,30 +8,32 @@ fi
 
 set -xe
 
-VERSION=$1
+VERSION=${1:-upstream}
 
 cd /root
 rm -fr *
 if [ "$VERSION" == "upstream" ]; then
-	git clone https://github.com/apple/swift-protobuf.git
-	cd swift-protobuf
+	git clone https://github.com/grpc/grpc-swift.git
+	cd grpc-swift
 	VERSION=$(git rev-parse --short HEAD)
 else
-	curl -Ls https://github.com/apple/swift-protobuf/archive/$VERSION.zip -O
-	unzip $VERSION.zip
-	cd swift-protobuf-$VERSION
+	curl -Ls https://github.com/grpc/grpc-swift/archive/$VERSION.tar.gz | tar xvz
+	cd grpc-swift-$VERSION
 fi
 
-swift build -Xswiftc -static-stdlib -v -c release -Xlinker '-L/usr/lib/swift/linux/'
+#swift build -Xswiftc -static-stdlib -v -c release -Xlinker '-L/usr/lib/swift/linux/'
+cd Plugin 
+make
 
-cd .build/release
 mkdir -p export-lib/usr/lib/protoc-gen-swift-lib
 mkdir -p export-lib/lib64
 mkdir -p export-lib/usr/bin
 
 for lib in `ldd protoc-gen-swift | cut -d'>' -f2 | awk '{print $1}'` ; do    if [ -f "$lib" ] ; then cp -v "$lib" export-lib/usr/lib/protoc-gen-swift-lib;    fi  ; done
+for lib in `ldd protoc-gen-swiftgrpc | cut -d'>' -f2 | awk '{print $1}'` ; do    if [ -f "$lib" ] ; then cp -v "$lib" export-lib/usr/lib/protoc-gen-swift-lib;    fi  ; done
 mv export-lib/usr/lib/protoc-gen-swift-lib/ld-linux-x86-64.so.2 export-lib/lib64
 mv protoc-gen-swift export-lib/usr/bin
+mv protoc-gen-swiftgrpc export-lib/usr/bin
 cd export-lib && tar cvf export-lib-$VERSION.tar *
 mv export-lib-$VERSION.tar /export
 
