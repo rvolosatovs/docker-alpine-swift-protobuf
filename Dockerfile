@@ -5,7 +5,7 @@ ENV PROTOBUF_VERSION=3.3.0 \
 	SWIFT_PROTOBUF_VERSION=0.9.903 \
 	SWIFT_PROTOBUF_PREFIX=0.9.903
 
-ADD ./ressources/ld_library_path.patch /
+ADD ./resources/ld_library_path.patch /
 
 RUN apk add --no-cache build-base curl automake autoconf libtool && \
     curl -L https://github.com/QuentinPerez/docker-alpine-swift-protobuf/releases/download/${SWIFT_PROTOBUF_VERSION}/export-lib-${SWIFT_PROTOBUF_PREFIX}.tar | tar xv -C / && \
