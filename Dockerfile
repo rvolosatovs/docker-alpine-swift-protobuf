@@ -1,7 +1,7 @@
 FROM alpine:3.6
 LABEL maintainer="Roman Volosatovs <rvolosatovs@riseup.net>"
 
-ARG PROTOBUF_VERSION=3.3.1
+ARG PROTOBUF_VERSION=3.4.0
 ARG SWIFT_GRPC_VERSION=0.1.13
 
 ADD resources/ld_library_path.patch /
