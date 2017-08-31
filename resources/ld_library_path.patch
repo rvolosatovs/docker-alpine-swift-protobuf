@@ -1,6 +1,6 @@
---- a/src/google/protobuf/compiler/subprocess.cc
-+++ b/src/google/protobuf/compiler/subprocess.cc
-@@ -300,6 +300,10 @@ void Subprocess::Start(const string& program, SearchMode search_mode) {
+--- src/google/protobuf/compiler/subprocess.cc.old	2017-08-31 16:31:59.276014322 +0200
++++ src/google/protobuf/compiler/subprocess.cc	2017-08-31 16:34:05.839925949 +0200
+@@ -309,6 +309,10 @@
    GOOGLE_CHECK(pipe(stdin_pipe) != -1);
    GOOGLE_CHECK(pipe(stdout_pipe) != -1);
  
@@ -8,6 +8,6 @@
 +    setenv("LD_LIBRARY_PATH", "/usr/lib/protoc-gen-swift-lib", true);
 +  }
 +
-   char* argv[2] = { strdup(program.c_str()), NULL };
+   char* argv[2] = { portable_strdup(program.c_str()), NULL };
  
    child_pid_ = fork();
